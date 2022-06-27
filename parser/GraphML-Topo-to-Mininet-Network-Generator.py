@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 #GraphML-Topo-to-Mininet-Network-Generator
 #
@@ -31,8 +31,8 @@
 #   -   fix double name error of some topologies
 #   -   fix topoparsing (choose by name, not element <d..>)
 #           =    topos with duplicate labels
-#   -   use 'argparse' for script parameters, eases help creation
-#
+# UPDATE:
+#   -   implemented argparse for script parameters @YM:06/27/2022
 #################################################################################
 
 
@@ -41,6 +41,7 @@ import xml.etree.ElementTree as ET
 import sys
 import math
 import re
+import argparse
 from sys import argv
 
 input_file_name = ''
@@ -49,30 +50,30 @@ bandwidth_argument = ''
 controller_ip = ''
 
 # first check commandline arguments
-for i in range(len(argv)):
 
-    if argv[i] == '-f':
-        input_file_name = argv[i+1]
-    if argv[i] == '--file':
-        input_file_name = argv[i+1]
-    if argv[i] == '-o':
-        output_file_name = argv[i+1]
-    if argv[i] == '--output':
-        output_file_name = argv[i+1]
-    if argv[i] == '-b':
-        bandwidth_argument = argv[i+1]
-    if argv[i] == '--bw':
-        bandwidth_argument = argv[i+1]
-    if argv[i] == '--bandwidth':
-        bandwidth_argument = argv[i+1]
-    if argv[i] == '-c':
-        controller_ip = argv[i+1]
-    if argv[i] == '--controller':
-        controller_ip = argv[i+1]
 
+parser = argparse.ArgumentParser(description='Parser of .graphml file, generates a mininet network topology')
+parser.add_argument('-f', '--file', type=str, help='filename of GraphML input file')
+parser.add_argument('-o', '--output', type=str, help='filename of mininet topology *.py file')
+parser.add_argument('-b', '-bw', '--bandwidth', type=str, help='numebr as integer for bandwidth in mbit')
+parser.add_argument('-c', '--controller', type=str, help='controller ip as string')
+
+args = parser.parse_args()
+
+if args.file is not None:
+    input_file_name = args.file
+else:
+    input_file_name = ''
 # terminate when inputfile is missing
 if input_file_name == '':
-    sys.exit('\n\tNo input file was specified as argument....!')
+    sys.exit('No input file was specified as argument....EXITED!')
+
+if args.output is not None:
+    output_file_name = args.output
+if args.bandwidth is not None:
+    bandwidth_argument = args.bandwidth
+if args.controller is not None:
+    controller_ip = args.controller
 
 # define string fragments for output later on
 outputstring_1 = '''#!/usr/bin/python
@@ -389,4 +390,4 @@ outputfile = open(output_file_name, 'w')
 outputfile.write(outputstring_to_be_exported)
 outputfile.close()
 
-print "Topology generation SUCCESSFUL!"
+print("Topology generation SUCCESSFUL!")
