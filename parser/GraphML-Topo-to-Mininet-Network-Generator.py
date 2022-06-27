@@ -33,6 +33,7 @@
 #           =    topos with duplicate labels
 # UPDATE:
 #   -   implemented argparse for script parameters @YM:06/27/2022
+#   -   update the generated code for python3 mininet libraries @YM:06/27/2022
 #################################################################################
 
 
@@ -133,7 +134,7 @@ def setupNetwork(controller_ip):
     topo = GeneratedTopo()
     if controller_ip == '':
         #controller_ip = '10.0.2.2';
-        controller_ip = '127.0.0.1';
+        controller_ip = '127.0.0.1'
     net = Mininet(topo=topo, controller=lambda a: RemoteController( a, ip=controller_ip, port=6633 ), host=CPULimitedHost, link=TCLink)
     return net
 
@@ -164,19 +165,21 @@ def sshd( network, cmd='/usr/sbin/sshd', opts='-D' ):
         host.cmd( cmd + ' ' + opts + '&' )
 
     # DEBUGGING INFO
-    print
-    print "Dumping host connections"
+    print()
+    print("Dumping host connections")
+    print()
     dumpNodeConnections(network.hosts)
-    print
-    print "*** Hosts are running sshd at the following addresses:"
-    print
+    print()
+    print("*** Hosts are running sshd at the following addresses:")
+    print()
     for host in network.hosts:
-        print host.name, host.IP()
-    print
-    print "*** Type 'exit' or control-D to shut down network"
-    print
-    print "*** For testing network connectivity among the hosts, wait a bit for the controller to create all the routes, then do 'pingall' on the mininet console."
-    print
+        print(host.name, host.IP())
+    print()
+    print("*** Type 'exit' or control-D to shut down network")
+    print()
+    print()
+    print("*** For testing network connectivity among the hosts, wait a bit for the controller to create all the routes, then do 'pingall' on the mininet console.")
+    print()
 
     CLI( network )
     for host in network.hosts:
